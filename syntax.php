@@ -41,20 +41,18 @@
  *                                  « CTR_ONE ».
  *
  * @license             :   GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
- * @author              :   Patrice Bonneau <patrice.bonneau@live.ca>
- * @lastupdate          :   2012-06-12
- * @compatible          :   2012-01-25 "Angua"
+ * @author              :   Patrice Bonneau <patrice.bonneau@live.ca>, Florian Wehner <florian@whnr.de>
+ * @lastupdate          :   2017-03-20
+ * @compatible          :   2017-02-19 "Frusterick Manners"
  */
 
 
 // must be run within DokuWiki
 if (!defined('DOKU_INC')) die();
 
-if (!defined('DOKU_LF')) define('DOKU_LF', "\n");
-if (!defined('DOKU_TAB')) define('DOKU_TAB', "\t");
 if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
-require_once DOKU_PLUGIN.'syntax.php';
+require_once(DOKU_PLUGIN.'syntax.php');
 
 class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
 
@@ -63,14 +61,23 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
     var $COUNTER_ID_PATTERN = "[a-zA-Z0-9_]+";
 
 
-    public function getType()    { return 'substition'; }
-    public function getPType()   { return 'normal'; }
-    public function getSort()    { return 45; }
-    public function getInfo()    {
+    public function getType() {
+        return 'substition';
+    } 
+    
+    public function getPType() {
+        return 'normal';
+    }
+
+    public function getSort() {
+        return 45;
+    }
+
+    public function getInfo() {
         return array(
             'author' => 'Patrice Bonneau',
             'email'  => 'patrice.bonneau@live.ca',
-            'date'   => '2012-06-04',
+            'date'   => '2017-03-20',
             'name'   => 'Autonumbering Plugin',
             'desc'   => 'Allows the use of multiples counters with multiples levels, within the same page.',
             'url'    => 'http://www.dokuwiki.org/plugin:autonumbering',
