@@ -41,9 +41,6 @@
  *                                  « CTR_ONE ».
  *
  * @license             :   GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
- * @author              :   Patrice Bonneau <patrice.bonneau@live.ca>, Florian Wehner <florian@whnr.de>
- * @lastupdate          :   2017-03-20
- * @compatible          :   2017-02-19 "Frusterick Manners"
  */
 
 
@@ -73,22 +70,9 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
         return 45;
     }
 
-    public function getInfo() {
-        return array(
-            'author' => 'Patrice Bonneau',
-            'email'  => 'patrice.bonneau@live.ca',
-            'date'   => '2017-03-20',
-            'name'   => 'Autonumbering Plugin',
-            'desc'   => 'Allows the use of multiples counters with multiples levels, within the same page.',
-            'url'    => 'http://www.dokuwiki.org/plugin:autonumbering',
-        );
-    }
-
-
     public function connectTo($mode) {
         $this->Lexer->addSpecialPattern($this->PLUGIN_PATTERN, $mode, 'plugin_autonumbering');
     }
-
 
     public function handle($match, $state, $pos, &$handler){
         global $COUNTER;
