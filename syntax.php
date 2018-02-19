@@ -74,7 +74,7 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
         $this->Lexer->addSpecialPattern($this->PLUGIN_PATTERN, $mode, 'plugin_autonumbering');
     }
 
-    public function handle($match, $state, $pos, &$handler){
+    public function handle($match, $state, $pos, Doku_Handler $handler){
         global $COUNTER;
         $counterID = '';
         switch ($state) {
@@ -146,7 +146,7 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
         return array();
     }
 
-    public function render($mode, &$renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data) {
         if(($mode == 'xhtml') && (!empty($data))) {
             list($number, $null) = $data;
             $renderer->doc .= $number;
