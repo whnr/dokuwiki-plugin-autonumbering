@@ -134,7 +134,11 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
                         $period = '';
                         for ($i = 0; $i < $levelsQty; ++$i) {
                             $number .= $period . $COUNTER[$counterID][$i];
-                            $period = '.';
+                            if (ctype_alpha($COUNTER[$counterID][$i])) {
+                                if ($period != '.')
+                                    $period = ' ';
+                            } else
+                                $period = '.';
                         }
                         return array($number, NULL);
                     } else {
