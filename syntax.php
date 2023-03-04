@@ -77,6 +77,7 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
     public function handle($match, $state, $pos, Doku_Handler $handler){
         global $COUNTER;
         $counterID = '';
+        $class = 'autonumberingAll autonumbering';
         switch ($state) {
             case DOKU_LEXER_SPECIAL :
 
@@ -105,10 +106,11 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
                         // Check if parent level exist
                         for ($i = 0; $i < $levelsQty; ++$i) {
                             // Check if level contain text
-                            if (ctype_alpha($dataTab[$i]))
+                            if (ctype_alpha($dataTab[$i])) {
                                 $COUNTER[$counterID][$i] = $dataTab[$i];
+                                $class .= '_' . $dataTab[$i];
                             // Search for a forced value
-                            else if (preg_match('/(' . $this->NUMBER_PATTERN . ')/', $dataTab[$i], $matches))
+                            } else if (preg_match('/(' . $this->NUMBER_PATTERN . ')/', $dataTab[$i], $matches))
                                 if ($i == $currentLevel)
                                     $COUNTER[$counterID][$i] = $matches[1]-1;
                                 else
@@ -130,7 +132,7 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
                         ++$COUNTER[$counterID][$currentLevel];
 
                         // Return the number, according the level asked
-                        $number = '';
+                        $number = "<span class=\"$class\">";
                         $period = '';
                         for ($i = 0; $i < $levelsQty; ++$i) {
                             $number .= $period . $COUNTER[$counterID][$i];
@@ -140,6 +142,7 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
                             } else
                                 $period = '.';
                         }
+                        $number .= '</span>';
                         return array($number, NULL);
                     } else {
                         return array($match, NULL);
