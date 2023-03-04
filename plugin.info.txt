@@ -1,7 +1,7 @@
 base   autonumbering
 author Florian Wehner
 email  florian@whnr.de
-date   2018-02-19
+date   2023-03-04
 name   Autonumbering Plugin
 desc   This plugin allows the use of multiples counters with multiples levels, within the same page.
 url    https://www.dokuwiki.org/plugin:autonumbering
