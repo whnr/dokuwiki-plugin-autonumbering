@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DokuWiki Plugin autonumbering (Action Component)
  *
@@ -7,12 +8,16 @@
  * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 use dokuwiki\Extension\ActionPlugin;
 use dokuwiki\Extension\Event;
 use dokuwiki\Extension\EventHandler;
 
 // must be run within DokuWiki
-if (!defined('DOKU_INC')) die();
+if (!defined('DOKU_INC')) {
+    die();
+}
+// phpcs:enable
 
 class action_plugin_autonumbering extends ActionPlugin
 {
