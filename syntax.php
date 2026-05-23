@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DokuWiki Plugin autonumbering (Syntax Component)
  *
@@ -43,44 +44,48 @@
  * @license             :   GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
+use dokuwiki\Extension\SyntaxPlugin;
 
 // must be run within DokuWiki
-if (!defined('DOKU_INC')) die();
+if (!defined('DOKU_INC')) {
+    die();
+}
+// phpcs:enable
 
-if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
+class syntax_plugin_autonumbering extends SyntaxPlugin
+{
+    public $PLUGIN_PATTERN = "~~[a-zA-Z0-9_\.#@]*#[a-zA-Z0-9_\.#@]*~~";
+    public $NUMBER_PATTERN = "[0-9]+";
+    public $COUNTER_ID_PATTERN = "[a-zA-Z0-9_]+";
 
-require_once(DOKU_PLUGIN.'syntax.php');
-
-class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
-
-    var $PLUGIN_PATTERN = "~~[a-zA-Z0-9_\.#@]*#[a-zA-Z0-9_\.#@]*~~";
-    var $NUMBER_PATTERN = "[0-9]+";
-    var $COUNTER_ID_PATTERN = "[a-zA-Z0-9_]+";
-
-
-    public function getType() {
+    public function getType()
+    {
         return 'substition';
-    } 
-    
-    public function getPType() {
+    }
+
+    public function getPType()
+    {
         return 'normal';
     }
 
-    public function getSort() {
+    public function getSort()
+    {
         return 45;
     }
 
-    public function connectTo($mode) {
+    public function connectTo($mode)
+    {
         $this->Lexer->addSpecialPattern($this->PLUGIN_PATTERN, $mode, 'plugin_autonumbering');
     }
 
-    public function handle($match, $state, $pos, Doku_Handler $handler){
+    public function handle($match, $state, $pos, Doku_Handler $handler)
+    {
         global $COUNTER;
         $counterID = '';
         $class = 'autonumberingAll autonumbering';
         switch ($state) {
-            case DOKU_LEXER_SPECIAL :
-
+            case DOKU_LEXER_SPECIAL:
                 if (preg_match('/~~(.*?)~~/', $match, $matches)) {
                     $data = $matches[1];
 
@@ -92,8 +97,9 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
                             $data = str_replace('@' . $counterID, '', $data);
                         } else {    // Search for IMPLICIT counter ID
                             $alpha = preg_replace('/[^a-zA-Z]/', '', $data);
-                            if (!empty($alpha))
+                            if (!empty($alpha)) {
                                 $counterID = $alpha;
+                            }
                         }
 
                         // Separate levels
@@ -109,24 +115,28 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
                             if (ctype_alpha($dataTab[$i])) {
                                 $COUNTER[$counterID][$i] = $dataTab[$i];
                                 $class .= '_' . $dataTab[$i];
-                            // Search for a forced value
-                            } else if (preg_match('/(' . $this->NUMBER_PATTERN . ')/', $dataTab[$i], $matches))
-                                if ($i == $currentLevel)
-                                    $COUNTER[$counterID][$i] = $matches[1]-1;
-                                else
+                            } elseif (preg_match('/(' . $this->NUMBER_PATTERN . ')/', $dataTab[$i], $matches)) {
+                                // Search for a forced value
+                                if ($i == $currentLevel) {
+                                    $COUNTER[$counterID][$i] = $matches[1] - 1;
+                                } else {
                                     $COUNTER[$counterID][$i] = $matches[1];
-                            // initialize if needed
-                            else if ((!isset($COUNTER[$counterID][$i])) || ($COUNTER[$counterID][$i] == 0))
-                                if ($i == $currentLevel)
+                                }
+                            } elseif ((!isset($COUNTER[$counterID][$i])) || ($COUNTER[$counterID][$i] == 0)) {
+                                // initialize if needed
+                                if ($i == $currentLevel) {
                                     $COUNTER[$counterID][$i] = 0;
-                                else
+                                } else {
                                     $COUNTER[$counterID][$i] = 1;
+                                }
+                            }
                         }
 
                         // Check if child level exist, and initialize
                         $counter_levelsQty = count($COUNTER[$counterID]);
-                        for ($i = $currentLevel+1; $i < $counter_levelsQty; ++$i)
+                        for ($i = $currentLevel + 1; $i < $counter_levelsQty; ++$i) {
                             $COUNTER[$counterID][$i] = 0;
+                        }
 
                         // Increment current level
                         ++$COUNTER[$counterID][$currentLevel];
@@ -137,24 +147,27 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
                         for ($i = 0; $i < $levelsQty; ++$i) {
                             $number .= $period . $COUNTER[$counterID][$i];
                             if (ctype_alpha($COUNTER[$counterID][$i])) {
-                                if ($period != '.')
+                                if ($period != '.') {
                                     $period = ' ';
-                            } else
+                                }
+                            } else {
                                 $period = '.';
+                            }
                         }
                         $number .= '</span>';
-                        return array($number, NULL);
+                        return array($number, null);
                     } else {
-                        return array($match, NULL);
+                        return array($match, null);
                     }
                 }
-            break;
+                break;
         }
         return array();
     }
 
-    public function render($mode, Doku_Renderer $renderer, $data) {
-        if(($mode == 'xhtml') && (!empty($data))) {
+    public function render($mode, Doku_Renderer $renderer, $data)
+    {
+        if (($mode == 'xhtml') && (!empty($data))) {
             list($number, $null) = $data;
             $renderer->doc .= $number;
             return true;
@@ -162,14 +175,14 @@ class syntax_plugin_autonumbering extends DokuWiki_Syntax_Plugin {
         return false;
     }
 
-
     // To work with the plugin « reproduce », who needs to do
     // the numbering prior to reproducing the code.
-    public function doNumbering($pageContent){
+    public function doNumbering($pageContent)
+    {
         $qtyOccurrences = preg_match_all('/~~(.*?)~~/', $pageContent, $matches);
         if ($qtyOccurrences > 0) {
             for ($i = 0; $i < $qtyOccurrences; $i++) {
-                list($number, $null) = $this->handle($matches[0][$i], DOKU_LEXER_SPECIAL, NULL, $handler);
+                list($number, $null) = $this->handle($matches[0][$i], DOKU_LEXER_SPECIAL, null, $handler);
                 $pageContent = preg_replace('(' . $matches[0][$i] . ')', $number, $pageContent, 1);
             }
         }
